@@ -1,17 +1,12 @@
 <template>
-    <div class="title">
-        <el-steps :active="active"  align-center>
-            <el-step title="第一步" description="填写基本信息" />
-            <el-step title="第二步" description="设置投票项目" />
-            <el-step title="第三部" description="提交表单" />
-        </el-steps>
-    </div>
     <div class="form">
         <router-view/>
     </div>
 </template>
 
 <script>
+
+import {useStepStore} from '../pinia/index.js'
 
 export default {
     name: "Publish",
@@ -21,8 +16,14 @@ export default {
         }
     },
     methods: {
-
-    }
+        stepChange() {
+            const store = useStepStore()
+            store.active = this.active
+        }
+    },
+    created() {
+        this.stepChange()
+    },
 }
 </script>
 
@@ -30,11 +31,12 @@ export default {
 .form {
     width: 50vw;
     margin: 20px auto;
+    overflow: auto;
 }
 
-.title {
-    width: 60vw;
-    text-align: center;
-    margin: 20px auto;
+@media screen and (max-width: 1000px) {
+    .form {
+        width: 94vw;
+    }
 }
 </style>

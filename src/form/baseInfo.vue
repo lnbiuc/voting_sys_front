@@ -1,4 +1,13 @@
 <template>
+    <div class="title" style="
+    text-align: center;
+    margin: 20px auto;">
+        <el-steps :active="1" align-center>
+            <el-step title="第一步" description="填写基本信息"/>
+            <el-step title="第二步" description="设置投票项目"/>
+            <el-step title="第三步" description="提交表单"/>
+        </el-steps>
+    </div>
     <div class="form">
         <el-form ref="baseForm" :model="ruleForm" :rules="rules" label-position="top">
             <el-form-item label="标题" prop="title">
@@ -17,14 +26,14 @@
                         value-format="YYYY-MM-DD HH:mm:ss"
                 />
             </el-form-item>
-            <el-form-item label="每人选票数" prop="votingNumber">
+            <el-form-item label="每人选票数">
                 <el-input-number v-model="ruleForm.votingNumber" :min="1" :max="10"/>
             </el-form-item>
-            <el-form-item label="获胜人数" prop="wayWin">
+            <el-form-item label="获胜人数">
                 <el-input-number v-model="ruleForm.wayWin" :min="1" :max="10"/>
             </el-form-item>
             <el-form-item>
-                <el-button @click="submit">下一步</el-button>
+                <el-button style="width: 100%" @click="submit">下一步</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -41,15 +50,13 @@ export default {
                 title: [{required: true, message: '不可为空', trigger: 'change'}],
                 describe: [{required: true, message: '不可为空', trigger: 'change'}],
                 time: [{required: true, message: '不可为空', trigger: 'change'}],
-                votingNumber: [{required: true, message: '不可为空', trigger: 'change'}],
-                wayWin: [{required: true, message: '不可为空', trigger: 'change'}],
             },
             ruleForm: {
                 title: '',
                 describe: '',
                 time: '',
-                votingNumber: '',
-                wayWin: ''
+                votingNumber: 0,
+                wayWin: 0
             },
         }
     },
@@ -57,7 +64,6 @@ export default {
         submit() {
             this.$refs.baseForm.validate((valid) => {
                 if (valid) {
-                    ElMessage.success("提交成功")
                     this.$router.push('/publish/items')
                 } else {
                     ElMessage.error("数据不完整")

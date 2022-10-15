@@ -11,3 +11,9 @@ export const useVoteInfoStore = defineStore('voteInfo',{
         vote: {}
     })
 })
+
+export const useStepStore = defineStore('step',{
+    state: () => ({
+        active: 1
+    })
+})

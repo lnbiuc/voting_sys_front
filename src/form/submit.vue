@@ -1,4 +1,13 @@
 <template>
+    <div class="title" style="
+    text-align: center;
+    margin: 20px auto;">
+        <el-steps :active="3" align-center>
+            <el-step title="第一步" description="填写基本信息"/>
+            <el-step title="第二步" description="设置投票项目"/>
+            <el-step title="第三步" description="提交表单"/>
+        </el-steps>
+    </div>
     <el-result v-if="success"
                icon="success"
                title="提交成功"
@@ -20,6 +29,8 @@
 </template>
 
 <script>
+import {useStepStore} from '../pinia/index.js'
+
 export default {
     name: "submit",
     data() {
@@ -30,6 +41,8 @@ export default {
         }
     },
     created() {
+        const store = useStepStore()
+        store.active = 3
         this.status = this.$route.params.status
         if (this.status) {
             if (this.status === 'success') {
