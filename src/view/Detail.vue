@@ -3,13 +3,8 @@
         <div class="title">
             <h1>{{ vote.title }}</h1>
             <span>{{ vote.describe }}</span>
-            <div class="progress">
-                <h4 class="progressTitle">投票进度</h4>
-                <el-progress
-                        :stroke-width="10"
-                        :percentage="progress"
-                        :color="customColors"
-                />
+            <div class="vote_info">
+                <span>截止时间：{{vote.endTime}}</span>
             </div>
         </div>
         <div class="items">
@@ -24,7 +19,7 @@
                 <div class="item_votes">
                     <p>{{ i.currentVotes }} 票</p>
                 </div>
-                <div class="btn">
+                <div class="btn" @click="submitVote(i.itemsId)">
                     <p>投票</p>
                 </div>
             </div>
@@ -33,6 +28,7 @@
 </template>
 <script>
 import {useVoteInfoStore} from '../pinia/index.js'
+import {ElMessage} from 'element-plus'
 
 export default {
     name: 'Detail',
@@ -53,6 +49,13 @@ export default {
                     "introdiction": "投票项简介-2",
                     "img": "投票项图片url3",
                     "currentVotes": 57
+                },
+                {
+                    "itemsId": "3",
+                    "name": "投票项名称-3",
+                    "introdiction": "投票项简介-3",
+                    "img": "投票项图片url3",
+                    "currentVotes": 190
                 },
             ],
             vote: {},
@@ -79,18 +82,15 @@ export default {
                 // axios请求vote信息,并保存进store
             }
         },
-        setProgress() {
-            // 截止时间
-            let end_date = new Date("2022-10-11 09:21:30");
-            // 现在时间
-            let old_date = new Date();
-            if (end_date - old_date > 0) {
-                let time = parseInt((end_date - old_date) / 1000)
-                console.log(time)
-                this.progress = 100 - time
-            } else {
-                this.progress = 100
+        submitVote(index) {
+            let list = this.items
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].itemsId === index) {
+                    list[i].currentVotes = list[i].currentVotes + 1
+                    ElMessage.success("投票成功")
+                }
             }
+            this.items = list
         }
     },
     created() {
@@ -128,7 +128,7 @@ export default {
     padding: 10px 10px;
 }
 
-.title:hover,.item:hover {
+.title:hover, .item:hover {
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05), 0 4px 5px rgba(0, 0, 0, 8%),
     0 2px 4px -1px rgba(0, 0, 0, 12%);
     transition: all 0.5s;
@@ -148,7 +148,7 @@ export default {
     justify-content: space-between;
 }
 
-.item_img, .item_info,.item_votes {
+.item_img, .item_info, .item_votes {
     margin: 10px 10px;
 }
 
@@ -162,7 +162,7 @@ export default {
 }
 
 .item_avatar_info {
-    display:flex;
+    display: flex;
     flex-direction: row;
     align-items: center;
 }
@@ -170,10 +170,6 @@ export default {
 .item_votes {
     display: flex;
     align-items: center;
-}
-
-.progressTitle {
-    margin-top: 10px;
 }
 
 .btn {
@@ -199,6 +195,13 @@ export default {
 .btn:hover > p {
     font-size: 1.6em;
     transition: font-size 0.5s;
+}
+
+.vote_info {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    color: gray;
 }
 
 @media screen and (max-width: 1000px) {

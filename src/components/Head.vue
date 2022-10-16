@@ -7,15 +7,15 @@
         </div>
         <div class="route">
             <span @click="goto(2)">
-                投票列表
+                <span><i class="icon list ol"/>投票列表</span>
             </span>
             <span @click="goto(3)">
-                发起投票
+                <span><i class="icon chart bar"/>发起投票</span>
             </span>
         </div>
         <div class="link">
             <span @click="goto(4)">
-                登陆
+                <span>登陆</span>
             </span>
         </div>
     </div>

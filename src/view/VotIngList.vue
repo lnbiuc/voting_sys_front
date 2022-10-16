@@ -5,7 +5,8 @@
             <div class="vot" v-for="v in votes" :key = v.uuid @click="toDetail(v.projectId)">
                 <div class="statusContent">
                     <div class="status">
-                        <a class="ui green ribbon label">状态：{{v.status}}</a>
+                        <a v-if="v.status" class="ui green ribbon label">状态：进行中</a>
+                        <a v-if="!v.status" class="ui red ribbon label">状态：已结束</a>
                     </div>
                 </div>
                 <div class="title">
@@ -40,7 +41,7 @@ export default {
                     "endTime":"2021-10-20 20:01:01",
                     "wayWin":3,
                     "votingNumber":"5",
-                    "status":"open"
+                    "status":true
                 },
                 {
                     "uuid":"uuid（64位）",
@@ -51,7 +52,7 @@ export default {
                     "endTime":"2021-10-20 20:01:01",
                     "wayWin":3,
                     "votingNumber":"5",
-                    "status":"open"
+                    "status":false
                 }
             ]
         }
@@ -94,6 +95,7 @@ export default {
     border-radius: 7px;
     margin: 20px auto;
     padding: 10px 10px;
+    cursor: pointer;
 }
 
 .vot:hover {
@@ -108,7 +110,7 @@ export default {
 
 .status {
     position: relative;
-    margin-left: 6px;
+    margin-left: 3px;
 }
 
 .time {

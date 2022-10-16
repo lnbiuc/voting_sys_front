@@ -24,7 +24,7 @@ const routes = [
 				path: '/votingList',
 				name: 'votingList',
 				component: VotingList,
-				meta: { title: '可参与的投票' },
+				meta: { title: '投票列表' },
 			},
 			{
 				path: '/detail/:votId',

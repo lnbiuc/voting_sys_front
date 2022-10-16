@@ -21,6 +21,7 @@
                 <el-button type="primary" style="width: 100%" @click="add">添加一项</el-button>
             </el-form-item>
         </el-form>
+        {{items}}
         <div class="imgUp">
             <el-upload :on-error="this.upError"
                        :on-success="this.upSuccess"
@@ -75,7 +76,7 @@ export default {
         return {
             items: [],
             token: {
-                token: ''
+                token: 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MDE4ODAyMjQsInVzZXJJZCI6Iks0dldwQXoxIiwiaWF0IjoxNjY1NTkyMjI0fQ.4FvJpmIxr-miR3GXkF2BihqX-7C2iVAz09hPPzGlWqk'
             },
             ruleForm: {
                 name: '',
@@ -130,7 +131,7 @@ export default {
         upSuccess(response, file, fileList) {
             if (response.code === 200) {
                 ElMessage.success('上传成功')
-                this.ruleForm.bgImg = response.data
+                this.ruleForm.img = response.data
             }
         },
         upError(err, file, fileList) {
@@ -145,6 +146,7 @@ export default {
 }
 </script>
 
+}
 <style scoped>
 
 .title:hover, .item:hover {
