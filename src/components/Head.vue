@@ -15,7 +15,7 @@
         </div>
         <div class="link">
             <span @click="goto(4)">
-                <span>登陆</span>
+                <span>注册/登陆</span>
             </span>
         </div>
     </div>

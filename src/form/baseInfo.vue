@@ -41,6 +41,7 @@
 
 <script>
 import {ElMessage} from 'element-plus'
+import {usePublishStore} from '../pinia/index.js'
 
 export default {
     name: "baseInfo",
@@ -64,6 +65,13 @@ export default {
         submit() {
             this.$refs.baseForm.validate((valid) => {
                 if (valid) {
+                    const store = usePublishStore()
+                    store.params.title = this.ruleForm.title
+                    store.params.project_info = this.ruleForm.describe
+                    store.params.startTime = this.ruleForm.time[0]
+                    store.params.endTime = this.ruleForm.time[1]
+                    store.params.wayWin = this.ruleForm.wayWin
+                    store.params.votingNumber = this.ruleForm.votingNumber
                     this.$router.push('/publish/items')
                 } else {
                     ElMessage.error("数据不完整")

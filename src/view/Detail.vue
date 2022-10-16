@@ -2,7 +2,7 @@
     <div class="mainContent">
         <div class="title">
             <h1>{{ vote.title }}</h1>
-            <span>{{ vote.describe }}</span>
+            <span>{{ vote.projectInfo }}</span>
             <div class="vote_info">
                 <span>截止时间：{{vote.endTime}}</span>
             </div>
@@ -29,34 +29,22 @@
 <script>
 import {useVoteInfoStore} from '../pinia/index.js'
 import {ElMessage} from 'element-plus'
+import {getProjectItems, submitVot} from '../axios/index.js'
 
 export default {
     name: 'Detail',
     data() {
         return {
-            "projectId": "2fhudf",
+            temp:'',
+            "projectId": "",
             "items": [
                 {
                     "itemsId": "1",
-                    "name": "投票项名称-1",
-                    "introdiction": "投票项投票项简投票项投票项简介投票项简介简介投票项投票项简介投票项简介简介投票项投票项简介投票项简介简介介投票项简介简介-1",
-                    "img": "投票项图片url",
+                    "name": "正在加载",
+                    "introdiction": "数据正在加载，请稍等",
+                    "img": "https://user-pic-1308549476.cos.ap-nanjing.myqcloud.com/pic/93021665907032739.jpg",
                     "currentVotes": 234
-                },
-                {
-                    "itemsId": "2",
-                    "name": "投票项名称-2",
-                    "introdiction": "投票项简介-2",
-                    "img": "投票项图片url3",
-                    "currentVotes": 57
-                },
-                {
-                    "itemsId": "3",
-                    "name": "投票项名称-3",
-                    "introdiction": "投票项简介-3",
-                    "img": "投票项图片url3",
-                    "currentVotes": 190
-                },
+                }
             ],
             vote: {},
             customColors: [
@@ -73,24 +61,39 @@ export default {
     methods: {
         getProjectItems() {
             this.projectId = this.$route.params.votId
+            getProjectItems(this.projectId).then(res => {
+                if (res.data.code === 200) {
+                    this.vote = res.data.data.project[0]
+                    this.items = res.data.data.items
+                    return
+                }
+                if (res.data.code === 401) {
+                    ElMessage.warning("此投票已经结束，您可以浏览其他投票")
+                }
+            })
         },
         getProjectInfo() {
             const store = useVoteInfoStore()
             if (store.vote) {
                 this.vote = store.vote
-            } else {
-                // axios请求vote信息,并保存进store
             }
         },
-        submitVote(index) {
-            let list = this.items
-            for (let i = 0; i < list.length; i++) {
-                if (list[i].itemsId === index) {
-                    list[i].currentVotes = list[i].currentVotes + 1
+        submitVote(itemsId) {
+            // let list = this.items
+            // for (let i = 0; i < list.length; i++) {
+            //     if (list[i].itemsId === index) {
+            //         list[i].currentVotes = list[i].currentVotes + 1
+            //         ElMessage.success("投票成功")
+            //     }
+            // }
+            // this.items = list
+            submitVot(this.vote.projectId,itemsId).then(res => {
+                if (res.data.code === 200) {
                     ElMessage.success("投票成功")
+                } else {
+                    ElMessage.error(res.data.msg)
                 }
-            }
-            this.items = list
+            })
         }
     },
     created() {

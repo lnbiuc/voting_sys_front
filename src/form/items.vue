@@ -21,7 +21,6 @@
                 <el-button type="primary" style="width: 100%" @click="add">添加一项</el-button>
             </el-form-item>
         </el-form>
-        {{items}}
         <div class="imgUp">
             <el-upload :on-error="this.upError"
                        :on-success="this.upSuccess"
@@ -67,8 +66,9 @@
 
 <script>
 
-import {useStepStore} from '../pinia/index.js'
+import {usePublishStore, useStepStore} from '../pinia/index.js'
 import {ElMessage} from 'element-plus'
+import {publish} from '../axios/index.js'
 
 export default {
     name: "items",
@@ -93,15 +93,23 @@ export default {
     methods: {
         submit() {
             if (this.items.length > 0) {
-                this.$router.push('/publish/submit/' + "success")
+                const store = usePublishStore()
+                store.params.items = this.items
+                publish(store.params).then(res => {
+                    if (res.data.code === 200) {
+                        this.$router.push('/publish/submit/' + "success")
+                    } else {
+                        this.$router.push('/publish/submit/' + "error")
+                    }
+                })
             } else {
-                this.$router.push('/publish/submit/' + "error")
+                ElMessage.error("未添加任何投票项")
             }
         },
         add() {
             this.$refs.baseForm.validate((valid) => {
                 if (valid) {
-                    ElMessage.warning("添加成功")
+                    ElMessage.success("添加成功")
                     let identifyId = Math.ceil(Math.random() * 100000);
                     let item = {
                         name: this.ruleForm.name,

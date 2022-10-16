@@ -8,14 +8,15 @@
                 <el-input v-model="ruleForm.code"/>
             </el-form-item>
             <div class="btn">
-                <el-button @click="sendCode">{{btn_text}}</el-button>
-                <el-button type="primary" @click="confirmOperation">登录 / 注册</el-button>
+                <el-button @click="sendCode" :disabled="disabled">{{ btn_text }}</el-button>
+                <el-button type="primary" @click="confirmOperation()">登录 / 注册</el-button>
             </div>
         </el-form>
     </div>
 </template>
 <script>
 import {ElMessage} from 'element-plus'
+import {getCode, usrLogin} from '../axios/index.js'
 
 export default {
     name: 'SignUp',
@@ -29,23 +30,63 @@ export default {
                 phone: '',
                 code: ''
             },
-            btn_text: '发送验证码'
+            btn_text: '发送验证码',
+            disabled: false,
+            timer: null
         }
     },
     methods: {
         confirmOperation() {
             this.$refs.baseForm.validate((valid) => {
                 if (valid) {
-
+                    usrLogin(this.ruleForm.phone, this.ruleForm.code).then(res => {
+                        if (res.data.code === 200) {
+                            console.log(5)
+                            ElMessage.success('登陆成功')
+                            let token = res.data.data.token
+                            window.localStorage.setItem('token',token)
+                            this.$router.push('/')
+                        } else {
+                            ElMessage.warning(res.data.msg)
+                        }
+                    })
+                } else {
+                    ElMessage.error("参数不完整")
                 }
             })
         },
         sendCode() {
             if (!this.ruleForm.phone) {
                 ElMessage.error("请先输入手机号")
+            } else {
+                getCode(this.ruleForm.phone).then(res => {
+                    if (res.data.code === 200) {
+                        ElMessage.success(res.data.data)
+                        this.btn_text = '已发送'
+                        this.disabled = true
+                        this.timer = setTimeout(this.changeStatus,60000)
+                    } else {
+                        ElMessage.error(res.data.msg)
+                    }
+                })
             }
+        },
+        changeStatus() {
+            this.disabled = false
         }
-    }
+    },
+    beforeDestroy() {
+        window.clearInterval(this.timer);
+        this.timer = null
+    },
+    destroy() {
+        window.clearInterval(this.timer);
+        this.timer = null
+    },
+    beforeRouteLeave() {
+        window.clearInterval(this.timer);
+        this.timer = null
+    },
 }
 </script>
 <style scoped>

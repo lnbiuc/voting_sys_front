@@ -2,7 +2,7 @@
 <template>
     <div class="mainContent">
         <div class="votList">
-            <div class="vot" v-for="v in votes" :key = v.uuid @click="toDetail(v.projectId)">
+            <div class="vot" v-for="v in votes" :key=v.uuid @click="toDetail(v.projectId)">
                 <div class="statusContent">
                     <div class="status">
                         <a v-if="v.status" class="ui green ribbon label">状态：进行中</a>
@@ -10,15 +10,15 @@
                     </div>
                 </div>
                 <div class="title">
-                    <p style="font-size: 25px;font-weight: 400">{{v.title}}</p>
-                    <span>{{v.describe}}</span>
+                    <p style="font-size: 25px;font-weight: 400">{{ v.title }}</p>
+                    <span>{{ v.describe }}</span>
                 </div>
                 <div class="votInfo">
-                    <span>产生{{v.wayWin}}名获胜者&nbsp;|&nbsp;</span>
+                    <span>产生{{ v.wayWin }}名获胜者&nbsp;|&nbsp;</span>
                     <span>可投{{ v.votingNumber }}张票</span>
                 </div>
                 <div class="time">
-                    <span>截止时间：{{v.endTime}}</span>
+                    <span>截止时间：{{ v.endTime }}</span>
                 </div>
             </div>
         </div>
@@ -26,33 +26,23 @@
 </template>
 <script>
 import {useVoteInfoStore} from '../pinia/index.js'
+import {getVotingList} from '../axios/index.js'
 
 export default {
     name: 'VotingList',
     data() {
         return {
+            temp: '',
             votes: [
                 {
-                    "uuid":"uuid（64位）",
-                    "projectId":"hgSd23",
-                    "title":"XX投票",
-                    "describe":"这是关于。。。的投票",
-                    "startTime":"2021-10-20 20:01:01",
-                    "endTime":"2021-10-20 20:01:01",
-                    "wayWin":3,
-                    "votingNumber":"5",
-                    "status":true
-                },
-                {
-                    "uuid":"uuid（64位）",
-                    "projectId":"fdfdf",
-                    "title":"XX投票",
-                    "describe":"这是关于。。。的投票",
-                    "startTime":"2021-10-20 20:01:01",
-                    "endTime":"2021-10-20 20:01:01",
-                    "wayWin":3,
-                    "votingNumber":"5",
-                    "status":false
+                    "projectId": "123",
+                    "title": "正在加载",
+                    "describe": "数据正在加载，请稍等",
+                    "startTime": "2021-10-20 20:01:01",
+                    "endTime": "2021-10-20 20:01:01",
+                    "wayWin": 3,
+                    "votingNumber": "5",
+                    "status": true
                 }
             ]
         }
@@ -68,12 +58,21 @@ export default {
                 }
             }
             this.$nextTick(() => {
-                this.$router.push('/detail/'+projectId)
+                this.$router.push('/detail/' + projectId)
+            })
+        },
+        getVotes() {
+            getVotingList().then(res => {
+                this.votes = res.data.data.projects
+                let uuid = res.data.data.uuid
+                if (!window.localStorage.getItem('uuid')) {
+                    window.localStorage.setItem('uuid', uuid)
+                }
             })
         }
     },
     created() {
-
+        this.getVotes()
     }
 }
 </script>

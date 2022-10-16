@@ -7,7 +7,7 @@
     <Footer/>
 </template>
 <script>
-import {useUuidStore} from '../pinia/index.js'
+
 import Head from '../components/Head.vue'
 import MyHead from '../components/Head.vue'
 import Footer from '../components/Footer.vue'
@@ -15,28 +15,6 @@ import Footer from '../components/Footer.vue'
 export default {
     name: 'Index',
     components: {Footer, MyHead, Head},
-    data() {
-        return {
-            uuid: ''
-        }
-    },
-    methods: {
-        getUuid() {
-            if (localStorage.getItem("uuid")) {
-                const store = useUuidStore()
-                this.uuid = localStorage.getItem("uuid")
-                store.uuid = localStorage.getItem("uuid")
-            } else {
-                this.uuid = "fdsfsdfkfdsgjzdvlmnjoifzjgiofjdgfdjgk"
-                const store = useUuidStore()
-                store.uuid = this.uuid
-                localStorage.setItem("uuid", this.uuid)
-            }
-        }
-    },
-    created() {
-        this.getUuid()
-    }
 }
 </script>
 <style scoped>
