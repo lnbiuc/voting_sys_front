@@ -13,8 +13,9 @@ NProgress.configure({
     trickleRate: 0.2,
 });
 
-axios.defaults.headers.common['token'] = window.localStorage.getItem('token');
 axios.defaults.headers.common['uuid'] = window.localStorage.getItem('uuid');
+axios.defaults.headers.common['token'] = window.localStorage.getItem('token');
+
 //前置拦截
 axios.interceptors.request.use(config => {
     NProgress.start();
@@ -78,12 +79,17 @@ export function publish(params) {
 export function submitVot(projectId, items) {
     let formData = new FormData
     formData.append("projectId", projectId)
-    let itemsArr = new Array(1)
-    itemsArr.push(items)
-    formData.append("items", itemsArr)
+    formData.append("items", items)
     return axios({
         url: './vote/voting',
         method: 'POST',
         data: formData
+    })
+}
+
+export function getResult() {
+    return axios({
+        url: './admin/result',
+        method: 'GET'
     })
 }

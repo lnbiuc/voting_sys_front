@@ -33,7 +33,7 @@ const routes = [
 				meta: { title: '投票' },
 			},
 			{
-				path: '/result',
+				path: '/result/:votId',
 				name: 'result',
 				component: Result,
 				meta: { title: '结果' },

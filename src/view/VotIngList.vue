@@ -2,14 +2,14 @@
 <template>
     <div class="mainContent">
         <div class="votList">
-            <div class="vot" v-for="v in votes" :key=v.uuid @click="toDetail(v.projectId)">
+            <div class="vot" v-for="v in votes" :key=v.uuid>
                 <div class="statusContent">
                     <div class="status">
                         <a v-if="v.status" class="ui green ribbon label">状态：进行中</a>
                         <a v-if="!v.status" class="ui red ribbon label">状态：已结束</a>
                     </div>
                 </div>
-                <div class="title">
+                <div class="title" @click="toDetail(v.projectId)">
                     <p style="font-size: 25px;font-weight: 400">{{ v.title }}</p>
                     <span>{{ v.describe }}</span>
                 </div>
@@ -19,6 +19,9 @@
                 </div>
                 <div class="time">
                     <span>截止时间：{{ v.endTime }}</span>
+                </div>
+                <div v-if="!v.status" class="result">
+                    <el-button type="primary" @click="toResult(v.projectId)">查看结果</el-button>
                 </div>
             </div>
         </div>
@@ -65,10 +68,11 @@ export default {
             getVotingList().then(res => {
                 this.votes = res.data.data.projects
                 let uuid = res.data.data.uuid
-                if (!window.localStorage.getItem('uuid')) {
-                    window.localStorage.setItem('uuid', uuid)
-                }
+                window.localStorage.setItem('uuid', uuid)
             })
+        },
+        toResult(projectId) {
+            this.$router.push('/result/' + projectId)
         }
     },
     created() {
@@ -120,6 +124,14 @@ export default {
 }
 
 .votInfo {
+
+}
+
+.title:hover {
+    color: #747bff;
+}
+
+.result {
 
 }
 

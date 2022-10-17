@@ -4,7 +4,8 @@
             <h1>{{ vote.title }}</h1>
             <span>{{ vote.projectInfo }}</span>
             <div class="vote_info">
-                <span>截止时间：{{vote.endTime}}</span>
+                <span>剩余票数：{{ number }}</span>
+                <span>截止时间：{{ vote.endTime }}</span>
             </div>
         </div>
         <div class="items">
@@ -35,7 +36,7 @@ export default {
     name: 'Detail',
     data() {
         return {
-            temp:'',
+            temp: '',
             "projectId": "",
             "items": [
                 {
@@ -55,7 +56,8 @@ export default {
                 {color: '#6f7ad3', percentage: 20},
             ],
             timer: null,
-            progress: 0
+            progress: 0,
+            number: null
         }
     },
     methods: {
@@ -65,6 +67,9 @@ export default {
                 if (res.data.code === 200) {
                     this.vote = res.data.data.project[0]
                     this.items = res.data.data.items
+                    if (this.number === null) {
+                        this.number = res.data.data.project[0].votingNumber
+                    }
                     return
                 }
                 if (res.data.code === 401) {
@@ -79,21 +84,20 @@ export default {
             }
         },
         submitVote(itemsId) {
-            // let list = this.items
-            // for (let i = 0; i < list.length; i++) {
-            //     if (list[i].itemsId === index) {
-            //         list[i].currentVotes = list[i].currentVotes + 1
-            //         ElMessage.success("投票成功")
-            //     }
-            // }
-            // this.items = list
-            submitVot(this.vote.projectId,itemsId).then(res => {
-                if (res.data.code === 200) {
-                    ElMessage.success("投票成功")
-                } else {
-                    ElMessage.error(res.data.msg)
-                }
-            })
+            if (this.number <= 0) {
+                ElMessage.error("票数不足")
+            } else {
+                submitVot(this.vote.projectId, itemsId).then(res => {
+                    this.number = this.number - 1
+                    if (res.data.code === 200) {
+                        ElMessage.success("投票成功")
+                        this.getProjectItems()
+                    } else {
+                        ElMessage.error(res.data.msg)
+                    }
+                })
+            }
+
         }
     },
     created() {
@@ -203,7 +207,7 @@ export default {
 .vote_info {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: space-between;
     color: gray;
 }
 
